@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Secutiy-Policy" name="viewport" content="script-src 'self' 'unsafe-inline'">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>INVENT - Registro de Producto</title>
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-dark">
+    
+    <a class="navbar-brand" id="indexBtn" href="index.html"><i class="medium material-icons">arrow_back</i>INVENT</a>
+    <div class="dropdown">
+      <button class="btn btn-warning dropdown-toggle float-left" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Dropdown button
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Entrada</a>
+        <a class="dropdown-item" href="#">Salida</a>
+        <a class="dropdown-item" href="#">Parcial</a>
+      </div>
+    </div>
+  </nav>
+  <!-- Nav BAr-->
+  <br>
+  <!-- Forma de ingreso-->
+  <div class="card text-center">
+    <h5 class="card-tittle"> Forma de Registro</h5>
+    <form id="addForm">
+      <div class="form-group row text-center">
+        <label for="tagCodigo" class="col-sm-2 col-form-label">Codigo</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="tagCodigo" placeholder="Ingrese el Codigo de barras">
+        </div>
+        <label for="tagDescripcion" class="col-sm-2 col-form-label">Descripcion</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="tagDescripcion" placeholder="Ingrese la descripcion">
+        </div>
+        <label for="tagCantidad" class="col-sm-2 col-form-label">Cantidad</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" id="tagCantidad" placeholder="Ingrese la cantidad">
+        </div>
+        <label for="tagPrecio" class="col-sm-2 col-form-label">Precio</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="tagPrecio" placeholder="Ingrese el precio">
+        </div>
+      </div>
+      <button type="submit" class="btn-success">Guardar</button>
+      </form>
+  </div>
+    <!-- Forma de ingreso-->
+  <br>
+    <!--Nitificacion-->
+    <div id="alerta">
+      
+    </div>
+
+    <!-- Inico de la tabla de productos -->
+      <table class="table">
+        <thead>
+            <tr>
+              </tr>
+                <th scope="col">_id</th>
+                <th scope="col">Codigo</th>
+                <th scope="col">Descripcion</th>
+                <th scope="col">Cantidad</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Accion</th>
+            </tr>
+        </thead>
+        <tbody  id="lista">
+            
+          
+        </tbody>
+    </table>
+    
+    <script src="../ui/app.js"></script>
+</body>
+</html>
