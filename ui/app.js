@@ -73,11 +73,11 @@ function editProduct(id) {
     estadoEdicion = true;
     idAEditar = id;
     const editar = listaProductos.find( editar => editar._id === id);
-    console.log(listaProductos);
     tagCodigo.value = editar.codigo;
     tagDescripcion.value = editar.descripcion;
     tagCantidad.value = editar.cantidad;
-  }
+    tagPrecio.value = editar.precio;
+    }
 
 //Funcion para Renderizar el producto creado
 function productRender(producto) {
@@ -111,17 +111,12 @@ taskForm.addEventListener('submit', e => {
         descripcion: tagDescripcion.value,
         cantidad: tagCantidad.value,
         precio: tagPrecio.value
-
     }
-    if (product.precio < 0.10){
-        const currentWin = remote.getCurrentWindow()
-        alert('Debes poner un numero mayor a 10 centimos');
-        currentWin.reload();
-    }
+    console.log(estadoEdicion);
     if (!estadoEdicion) {
         ipcRenderer.send("new-product", product);
       } else {
-        ipcRenderer.send("update-product", { product, idAEditar });
+        ipcRenderer.send("update-product", { ...product, idAEditar });
       }
     
       taskForm.reset();

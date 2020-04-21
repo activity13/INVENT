@@ -10,7 +10,7 @@ mongoose.connect('mongodb+srv://activity1:olaola123@cluster0-yzqvz.mongodb.net/e
     .then( get => {
 
         console.log('Base de datos conectada!')})
-    .catch( err => console.log(err));
+    .catch( err => console.log(err  ));
 
 //crea la ventana de navegador
 app.on('ready', () => {
@@ -56,8 +56,8 @@ ipcMain.on('delete-product', async (e, args) => {
 
 //Edita el producto segyn su id
 ipcMain.on('update-product', async (e, args) => {
-    console.log(args);
-    const productEdited = await Producto.findByIdAndUpdate(args.idAEditar, {
+
+    const productEdited = await Producto.findOneAndUpdate(args.idAEditar, {
         codigo: args.codigo,
         descripcion: args.descripcion,
         cantidad: args.cantidad,
@@ -66,10 +66,8 @@ ipcMain.on('update-product', async (e, args) => {
     );
     e.reply('producto-editado', JSON.stringify(productEdited));
 });
-//Edita la cantidad de un producto
-ipcMain.on('change-qt', async (e,args) => {
-    console.log(args)
-})
+
+//INDEX
 //Busca el producto escrito en el input
 ipcMain.on('search-product', async (e, arg) => {
     const searchedProduct = await Producto.find({codigo: {$regex: arg}, });
