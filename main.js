@@ -13,8 +13,9 @@ mongoose.connect('mongodb+srv://activity1:olaola123@cluster0-yzqvz.mongodb.net/e
     .catch( err => console.log(err  ));
 
 //crea la ventana de navegador
+let win 
 app.on('ready', () => {
-    let win = new BrowserWindow({width: 1200, height: 900, webPreferences: {nodeIntegration:true}});
+    win = new BrowserWindow({width: 1200, height: 900, webPreferences: {nodeIntegration:true}});
     //Carga el raiz en HTML
     win.loadURL(`file://${__dirname}/routes/index.html`);
 
@@ -60,7 +61,7 @@ ipcMain.on('update-product', async (e, args) => {
     const productEdited = await Producto.findOneAndUpdate(args.idAEditar, {
         codigo: args.codigo,
         descripcion: args.descripcion,
-        cantidad: args.cantidad,
+        cantidad: args.cantidad + 11,
         precio: args.precio },
         { new: true},
     );
@@ -74,3 +75,16 @@ ipcMain.on('search-product', async (e, arg) => {
     e.reply('producto-buscado', JSON.stringify(searchedProduct));
     console.log(searchedProduct);
 }) 
+
+//ADD
+ipcMain.on('edited-qty', async (e, arg) => {
+    const cantidadFinal = arg;
+    win.webContents.send('colocar-cantidad', cantidadFinal);
+})
+ipcMain.on('update-cantidad', async (e, args) => {
+    const cantidadFinal = args.cantidadACambiar;
+    const cantidadEdited = await Producto.findOneAndUpdate(args.idAEditar,{
+        cantidad: args.cantidadACambiar,
+    },
+    {new: true})
+})
