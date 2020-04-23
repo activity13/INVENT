@@ -3,7 +3,9 @@ const path = require('path');
 const { BrowserWindow } = require('electron').remote;
 const redirectAdd = document.getElementById('addBtn');
 const vamos = document.querySelector('#vamos');
-const almacenRed = document.getElementById('alBtn')
+const almacenRed = document.getElementById('alBtn');
+const alerta = document.querySelector('#notifications');
+
 
 //redirecciona para crear productos
 redirectAdd.addEventListener('click', function(e) {
@@ -17,7 +19,27 @@ redirectAdd.addEventListener('click', function(e) {
     win.show();
     currentWin.close();
 });
-// Quiero que al hacer click en el boton generado abra una nueva pestaña
+//Notificaciones
+function alerta0() {
+    alerta.innerHTML = `
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+    <strong>Error0 </strong> Cantidad mínima 1
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    `;
+}
+function alerta1() {
+    alerta.innerHTML = `
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    <strong>Stock Actualizado!</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    `;
+}
 
 
 
@@ -39,12 +61,19 @@ let estadoEdicion = false;
 let idAEditar = "";
 let cantidadACambiar = []
 
+// recibe el id en addRec() y pasa a variable y es enviado a 
 function editQU(id) {
     ipcRenderer.on('colocar-cantidad', function(e, arg) {
+        console.log(arg);
         cantidadACambiar = Number(arg);
         estadoEdicion = true;
         idAEditar = id;
-        ipcRenderer.send("update-cantidad", { idAEditar, cantidadACambiar });
+        if(cantidadACambiar >= 1) {
+            ipcRenderer.send("update-cantidad", { idAEditar, cantidadACambiar });
+            alerta1();
+        } else {
+            alerta0();
+        }
     })
 }
 
@@ -74,7 +103,7 @@ function productRender(producto) {
         `;
     });
 }
-//Abre la ventana para editar la cantidad de un articulo
+//Cumple varias funciones una es renderizar la ventana de cambiar cantidad y la otra envia la informacion como el id
 function addRec() {
     const modalPath = path.join('file://', __dirname, 'add.html');
     let win = new BrowserWindow({
@@ -102,7 +131,21 @@ ipcRenderer.on('producto-buscado', (e, args) => {
     renderCabecera();
     productRender(almacenProducto);
 });
+//recibe y renderiza el objeto actualizado
+ipcRenderer.on('cantidad-editada', (e, args) => {
+    alert(args)
+    estadoEdicion = false;
+    const cantidadEdit = JSON.parse(args);
+    almacenProducto = almacenProducto.map((t, i) => {
+        if(t.id === cantidadEdit._id) {
+            t.codigo = cantidadEdit.codigo,
+            t.descripcion = cantidadEdit.descripcion,
+            t.cantidad = cantidadEdit.precio
+        }
+        return t;
+    })
+    productRender(almacenProducto)
+})
 
-//edicion de articluos 
 
 

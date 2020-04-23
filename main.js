@@ -4,8 +4,10 @@ const Producto = require('./models/task');
 const DBnoti = 
 // Conexion a la base de datos
 mongoose.connect('mongodb+srv://activity1:olaola123@cluster0-yzqvz.mongodb.net/electrondb', { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
+// mongoose.connect('mongodb://localhost:27017/electrondb', { 
+
+useNewUrlParser: true, 
+useUnifiedTopology: true 
 })
     .then( get => {
 
@@ -58,13 +60,14 @@ ipcMain.on('delete-product', async (e, args) => {
 //Edita el producto segyn su id
 ipcMain.on('update-product', async (e, args) => {
 
-    const productEdited = await Producto.findOneAndUpdate(args.idAEditar, {
+    const productEdited = await Producto.findByIdAndUpdate(args.idAEditar, {
         codigo: args.codigo,
         descripcion: args.descripcion,
-        cantidad: args.cantidad + 11,
+        cantidad: args.cantidad,
         precio: args.precio },
         { new: true},
     );
+    // console.log(productEdited)
     e.reply('producto-editado', JSON.stringify(productEdited));
 });
 
@@ -77,14 +80,18 @@ ipcMain.on('search-product', async (e, arg) => {
 }) 
 
 //ADD
+//Recibe el input en add.js se almacena y se envia a index.js donde el valor será procesado y devuelto
 ipcMain.on('edited-qty', async (e, arg) => {
     const cantidadFinal = arg;
     win.webContents.send('colocar-cantidad', cantidadFinal);
 })
+//Edita la cantidad al id obtenido
 ipcMain.on('update-cantidad', async (e, args) => {
-    const cantidadFinal = args.cantidadACambiar;
-    const cantidadEdited = await Producto.findOneAndUpdate(args.idAEditar,{
+    // const cantidadFinal = args.cantidadACambiar;
+    const cantidadEdited = await Producto.findByIdAndUpdate(args.idAEditar,{
         cantidad: args.cantidadACambiar,
-    },
-    {new: true})
-})
+    }, 
+    {new: true});
+    e.reply('cantidad-editada', JSON.stringify(cantidadEdited));
+    console.log(cantidadEdited)
+});

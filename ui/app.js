@@ -152,6 +152,7 @@ ipcRenderer.on('producto-eliminado', (e, args) => {
 //Renderiza el prodcuto actualizado
 ipcRenderer.on('producto-editado', (e, args) => {
     estadoEdicion = false;
+    alert(args)
     const productEdited = JSON.parse(args);
     listaProductos = listaProductos.map((t, i) => {
         if(t._id === productEdited._id) {
