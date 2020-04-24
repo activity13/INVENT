@@ -3,7 +3,8 @@ const { model, Schema } = require('mongoose');
 const temptSchema = new Schema({
     Codf: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     Descr: {
         type: String,
@@ -17,18 +18,10 @@ const temptSchema = new Schema({
         type: Number,
         required: false
     },
-    Pvns: {
-        type: Number,
-        required: true
-    },
-    Almacen: {
+    Stoc: {
         type: Number,
         required: false
-    },
-    Stock: {
-        type: Number,
-        required: true
-    }
-}, { collection : 'productos' });
+        }
+    }, { collection : 'Hola' });
 
-module.exports = model('productos', productoSchema)
+module.exports = model('Hola', temptSchema)

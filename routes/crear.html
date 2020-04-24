@@ -41,13 +41,17 @@
         <div class="col-sm-10">
           <input type="text" class="form-control" id="tagDescripcion" placeholder="Ingrese la descripcion">
         </div>
-        <label for="tagCantidad" class="col-sm-2 col-form-label">Cantidad</label>
+        <label for="tagCantidad" class="col-sm-2 col-form-label">Cantidad Total</label>
         <div class="col-sm-10">
           <input type="number" class="form-control" id="tagCantidad" placeholder="Ingrese la cantidad">
         </div>
-        <label for="tagPrecio" class="col-sm-2 col-form-label">Precio</label>
+        <label for="tagCosto" class="col-sm-2 col-form-label">Costo</label>
         <div class="col-sm-10">
-          <input type="text" class="form-control" id="tagPrecio" placeholder="Ingrese el precio">
+          <input type="text" class="form-control" id="tagCosto" placeholder="Ingrese el valor de costo">
+        </div>
+        <label for="tagVenta" class="col-sm-2 col-form-label">Venta</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="tagVenta" placeholder="Ingrese el valor de venta">
         </div>
       </div>
       <button type="submit" class="btn-success">Guardar</button>
@@ -67,8 +71,9 @@
               </tr>
                 <th scope="col">Codigo</th>
                 <th scope="col">Descripcion</th>
+                <th scope="col">Costo</th>
+                <th scope="col">Venta</th>
                 <th scope="col">Cantidad</th>
-                <th scope="col">Precio</th>
                 <th scope="col">Accion</th>
             </tr>
         </thead>
@@ -77,7 +82,15 @@
           
         </tbody>
     </table>
-    
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+      </ul>
+    </nav>
     <script src="../ui/app.js"></script>
 </body>
 </html>

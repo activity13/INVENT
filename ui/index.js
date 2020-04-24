@@ -9,7 +9,7 @@ const alerta = document.querySelector('#notifications');
 function alerta0() {
     alerta.innerHTML = `
     <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-    <strong>Error0 </strong> Cantidad mínima 1
+    <strong>Error0 </strong> Debe ingresar una cantidad 
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -44,8 +44,11 @@ function renderCabecera() {
         </tr>
             <th scope="col">Codigo</th>
             <th scope="col">Descripcion</th>
-            <th scope="col">Cantidad</th>
-            <th scope="col">Cambiar</th>
+            <th scope="col">Market</th>
+            <th scope="col">Market Min</th>
+            <th scope="col">Market Max</th>
+            <th scope="col">Almacen</th>
+            <th scope="col">Total</th>
         </tr>
     `
 }
@@ -55,9 +58,13 @@ function productRender(producto) {
     producto.map( t => {
         almacen.innerHTML += `
         <tr>
-            <td><a class="addBtn" href="#"> ${t.codigo} </a></td>
-            <td><a class="addBtn" href="#"> ${t.descripcion} </a></td>
-            <td><a class="addBtn" href="#"> ${t.cantidad} </a></td>
+            <td><a class="addBtn" href="#"> ${t.Codf} </a></td>
+            <td><a class="addBtn" href="#"> ${t.Descr} </a></td>
+            <td><a class="addBtn" href="#">Proximamente</a></td>
+            <td><a class="addBtn" href="#">Proximamente</a></td>
+            <td><a class="addBtn" href="#">Proximamente</a></td>
+            <td><a class="addBtn" href="#">Proximamente</a></td>
+            <td><a class="addBtn" href="#">${t.Stoc}</a></td>
             <td><button class="btn-success" onclick="hazTodo('${t._id}')" id="vamos"><i class="large material-icons">add_circle_outline</i></button></td>
         </tr>
         `;
@@ -75,7 +82,7 @@ function editQU(id) {
         cantidadACambiar = Number(arg);
         estadoEdicion = true;
         idAEditar = id;
-        if(cantidadACambiar >= 1) {
+        if(cantidadACambiar != null) {
             ipcRenderer.send("update-cantidad", { idAEditar, cantidadACambiar });
             alerta1();
         } else {
@@ -117,15 +124,15 @@ ipcRenderer.on('cantidad-editada', (e, args) => {
     const cantidadEdit = JSON.parse(args);
     almacenProducto = almacenProducto.map((t, i) => {
         if(t._id === cantidadEdit._id) {
-            t.codigo = cantidadEdit.codigo;
-            t.descripcion = cantidadEdit.descripcion;
-            t.cantidad = cantidadEdit.cantidad;
-            t.precio = cantidadEdit.precio;
+            t.Codf = cantidadEdit.Codf;
+            t.Descr = cantidadEdit.Descr;
+            t.Stoc = cantidadEdit.Stoc;
         }
         return t;
     });
     console.log(almacenProducto)
     productRender(almacenProducto)
+    almacenProducto = []
 })
 
 

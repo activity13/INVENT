@@ -5,7 +5,8 @@ const taskForm = document.querySelector('#addForm');
 const tagCodigo = document.querySelector('#tagCodigo');
 const tagDescripcion = document.querySelector('#tagDescripcion');
 const tagCantidad = document.querySelector('#tagCantidad');
-const tagPrecio = document.querySelector('#tagPrecio');
+const tagCosto = document.querySelector('#tagCosto');
+const tagVenta = document.querySelector('#tagVenta');
 const lista = document.querySelector('#lista');
 const alerta = document.querySelector('#alerta');
 
@@ -58,10 +59,11 @@ function editProduct(id) {
     estadoEdicion = true;
     idAEditar = id;
     const editar = listaProductos.find( editar => editar._id === id);
-    tagCodigo.value = editar.codigo;
-    tagDescripcion.value = editar.descripcion;
-    tagCantidad.value = editar.cantidad;
-    tagPrecio.value = editar.precio;
+    tagCodigo.value = editar.Codf;
+    tagDescripcion.value = editar.Descr;
+    tagCosto.value = editar.Pcns;
+    tagVenta.value = editar.Pvns;
+    tagCantidad.value = editar.Stoc;
     }
 
 //Funcion para Renderizar el producto creado
@@ -70,10 +72,11 @@ function productRender(producto) {
     producto.map( t => {
         lista.innerHTML += `
         <tr>
-            <td> ${t.codigo} </td>
-            <td> ${t.descripcion} </td>
-            <td> ${t.cantidad} </td>
-            <td> ${t.precio} </td>
+            <td> ${t.Codf} </td>
+            <td> ${t.Descr} </td>
+            <td> ${t.Pcns} </td>
+            <td> ${t.Pvns} </td>
+            <td> ${t.Stoc} </td>
             <td>
                 <button onclick="editProduct('${t._id}')" class="btn-warning">Editar</button>
                 <button onclick="eliminarProducto('${t._id}')" class="btn-danger" type="submit">Eliminar</button>
@@ -91,10 +94,11 @@ taskForm.addEventListener('submit', e => {
     e.preventDefault();
 
     const product = {
-        codigo: tagCodigo.value,
-        descripcion: tagDescripcion.value,
-        cantidad: tagCantidad.value,
-        precio: tagPrecio.value
+        Codf: tagCodigo.value,
+        Descr: tagDescripcion.value,
+        Pcns: tagCosto.value,
+        Pvns: tagVenta.value,
+        Stoc: tagCantidad.value
     }
     console.log(estadoEdicion);
     if (!estadoEdicion) {
@@ -139,10 +143,11 @@ ipcRenderer.on('producto-editado', (e, args) => {
     const productEdited = JSON.parse(args);
     listaProductos = listaProductos.map((t, i) => {
         if(t._id === productEdited._id) {
-            t.codigo = productEdited.codigo;
-            t.descripcion = productEdited.descripcion;
-            t.cantidad = productEdited.cantidad;
-            t.precio = productEdited.precio;
+            t.Codf = productEdited.Codf;
+            t.Descr = productEdited.Descr;
+            t.Pcns = productEdited.Pcns;
+            t.Pvns = productEdited.Pvns;
+            t.Stoc = productEdited.Stoc
         }
         return t;
     });
