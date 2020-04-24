@@ -70,7 +70,6 @@ function productRender(producto) {
     producto.map( t => {
         lista.innerHTML += `
         <tr>
-            <td> ${t._id} </td>
             <td> ${t.codigo} </td>
             <td> ${t.descripcion} </td>
             <td> ${t.cantidad} </td>
