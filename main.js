@@ -7,12 +7,14 @@ mongoose.connect('mongodb+srv://activity1:olaola123@cluster0-yzqvz.mongodb.net/e
 // mongoose.connect('mongodb://localhost:27017/electrondb', { 
 
 useNewUrlParser: true, 
-useUnifiedTopology: true 
+useUnifiedTopology: true,
+autoIndex: false
 })
     .then( get => {
-
         console.log('Base de datos conectada!')})
-    .catch( err => console.log(err  ));
+    .catch( err => {
+        console.log(err)
+    });
 
 //crea la ventana de navegador
 let win 

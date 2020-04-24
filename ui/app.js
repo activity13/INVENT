@@ -1,20 +1,5 @@
 const { ipcRenderer, remote } = require('electron');
 const path = require('path');
-const { BrowserWindow } = require('electron').remote;
-const redirectIndex = document.getElementById('indexBtn');
-
-//redirecciona para crear productos
-redirectIndex.addEventListener('click', function(e) {
-    const currentWin = remote.getCurrentWindow()
-    const modalPath = path.join('file://', __dirname, 'index.html');
-    let win = new BrowserWindow({
-        width: 1200, height: 900, webPreferences: {nodeIntegration:true}
-    })
-    win.on('close', function() { win = null});
-    win.loadURL(modalPath);
-    win.show();
-    currentWin.close();
-})
 
 const taskForm = document.querySelector('#addForm');
 const tagCodigo = document.querySelector('#tagCodigo');
@@ -152,7 +137,6 @@ ipcRenderer.on('producto-eliminado', (e, args) => {
 //Renderiza el prodcuto actualizado
 ipcRenderer.on('producto-editado', (e, args) => {
     estadoEdicion = false;
-    alert(args)
     const productEdited = JSON.parse(args);
     listaProductos = listaProductos.map((t, i) => {
         if(t._id === productEdited._id) {
@@ -164,5 +148,6 @@ ipcRenderer.on('producto-editado', (e, args) => {
         return t;
     });
     alertaEditado();
+    console.log(listaProductos)
     productRender(listaProductos);
 })
