@@ -26,6 +26,7 @@ function renderCabecera() {
 function productRender(producto) {
     almacen.innerHTML = '';
     producto.map( t => {
+
         almacen.innerHTML += `
         <tr>
             <td><a class="addBtn" href="#"> ${t.Codf} </a></td>
@@ -38,19 +39,17 @@ function productRender(producto) {
             <td>
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 <button type="button" class="btn btn-secondary" id="valorPicos" value="${t.Almacen}" onclick="Entrada('${t._id}')"><i class="material-icons">arrow_forward</i></button>
-                <button type="button" class="btn btn-secondary" id="valorMarket" value="${t.Stock}" onclick="Salida('${t._id}')"><i class="material-icons">arrow_back</i></button>
+                <button type="button" class="btn btn-secondary" id="MarketValue" value="${t.Market}" onclick="Salida('${t._id}')"><i class="material-icons">arrow_back</i></button>
 
                 <div class="btn-group" role="group">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                     <i class="material-icons">edit</i>Edicion
                     </button>
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                     <a class="dropdown-item" href="#" onclick="editStock('${t._id}')"><i class="material-icons">account_balance</i>Total</a>
-                    <a class="dropdown-item" href="#" onclick="editAlmacen('${t._id}')"><i class="material-icons">line_style</i>Almacen</a>
+                    <button class="dropdown-item"id="valorMarket" value="${t.Stock}" onclick="editAlmacen('${t._id}')"><i class="material-icons">line_style</i>Almacen</button>
                     <a class="dropdown-item" href="#" onclick="editMinimo('${t._id}')"><i class="material-icons">call_received</i>Minimo</a>
-                    <a class="dropdown-item" href="#" onclick="editMaximo('${t._id}')"><i class="material-icons">call_made</i>Maximo</a>
-
-
+                    <a class="dropdown-item" href="#" onclick="editMaximo('${t._id}')" ><i class="material-icons">call_made</i>Maximo</a>
                     </div>
                 </div>
             </div>
@@ -59,10 +58,10 @@ function productRender(producto) {
         `;
     });
 }
-
 let almacenProducto = [];
 let idAEditar = "";
 const inputEmergente = document.getElementById('emergente');
+
 //BUSCADOR
     //Envia el input al main para ser procesado
 getCode.addEventListener('click', function(e, arg) {
@@ -153,8 +152,10 @@ function Salida(id) {
     `
     const getQty = document.querySelector('#getQty')
     getQty.addEventListener('click', function() {
+        const valorPicos = document.querySelector('#valorPicos').value
+        const MarketValue = document.querySelector('#MarketValue').value
         const inputQty = document.querySelector('#inputQty').value
-        ipcRenderer.send('salida', {idAEditar, inputQty, Almacen })
+        ipcRenderer.send('salida', {idAEditar, inputQty, valorPicos, MarketValue})
     })
 }
 //RECIBEN Y ACTUALIZAN

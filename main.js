@@ -156,3 +156,11 @@ ipcMain.on('editar-almaxi', async (e, arg) =>  {
     console.log(minimoAlmacen)
     e.reply('stock-editado', JSON.stringify(minimoAlmacen));
 })
+ipcMain.on('salida', async (e, arg) =>  {
+    const minimoAlmacen = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
+        Almacen: arg.valorPicos - arg.inputQty,
+        Market: Number(arg.inputQty) + Number(arg.MarketValue)
+    }, {new: true})
+    console.log(minimoAlmacen)
+    e.reply('stock-editado', JSON.stringify(minimoAlmacen));
+})
