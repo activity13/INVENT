@@ -17,17 +17,26 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand text-warning" href="../routes/index.html"><i class="medium material-icons">arrow_back</i>INVENT</a>
           <a class="btn btn-outline-warning float-left" href="../routes/Almacen.html" type="button">ALMACEN</a>
-          <a class="btn btn-outline-success text-white float-left" type="button" id="alBtn">Registrar Producto</a>
+          <a class="btn btn-outline-success text-white float-left" type="button" href="../routes/crear.html" id="alBtn">Registrar Producto</a>
     </nav>
     <br>
     <br>
-    <form class="form-inline justify-content-center">
-      <input class="form-control mr-sm-2" type="search" name="search" aria-label="Search" id="inputSearch"  placeholder="Buscar por codigo" >
-      <button class="btn btn-outline-warning my-2 my-sm-0"  id="getCode" type="submit" value="search">Buscar</button>
-    </form>
+    <div class="container">
+      <div class="row">
+        <div class="col-7">
+          <form class="form-inline d-flex justify-content-end">
+            <input class="form-control mr-sm-2" type="search" name="search" aria-label="Search" id="inputSearch"  placeholder="Buscar por codigo" >
+            <button class="btn btn-outline-warning my-2 my-sm-0"  id="getCode" type="submit" value="search">Buscar</button>
+          </form>
+        </div>
+          <div class="col-5"  id="emergente">
+
+        </div>
+      </div>
+    </div>
     <br>
     <br>
-    <table class="table">
+    <table class="table text-center">
       <thead id="cabecera">
 
       </thead>
@@ -36,5 +45,13 @@
       </tbody>
     </table>
 
-
     <script src="../ui/almacen.js"></script>
+    <!-- <script>
+      $(document).ready(function() {
+        setInterval(
+          function() {
+            $('#almacen').load('../ui/almacen.js')
+          }, 2000
+        )
+      })
+    </script> -->

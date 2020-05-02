@@ -63,7 +63,7 @@ function editProduct(id) {
     tagDescripcion.value = editar.Descr;
     tagCosto.value = editar.Pcns;
     tagVenta.value = editar.Pvns;
-    tagCantidad.value = editar.Stoc;
+    tagCantidad.value = editar.Stock;
     }
 
 //Funcion para Renderizar el producto creado
@@ -76,11 +76,20 @@ function productRender(producto) {
             <td> ${t.Descr} </td>
             <td> ${t.Pcns} </td>
             <td> ${t.Pvns} </td>
-            <td> ${t.Stoc} </td>
+            <td> ${t.Stock} </td>
             <td>
-                <button onclick="editProduct('${t._id}')" class="btn-warning">Editar</button>
-                <button onclick="eliminarProducto('${t._id}')" class="btn-danger" type="submit">Eliminar</button>
-            </td>
+            <div class="btn-group" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Acciones
+                </button>
+                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <button onclick="editProduct('${t._id}')" class="btn-warning"><i class="large material-icons">edit</i>Editar</button>
+                <br>
+                <button onclick="eliminarProducto('${t._id}')" class="btn-danger" type="submit"><i class="large material-icons">highlight_off</i>Eliminar</button>
+                </div>
+            </div>
+            </div>
+        </td>
         </tr>
         `;
     });
@@ -98,7 +107,7 @@ taskForm.addEventListener('submit', e => {
         Descr: tagDescripcion.value,
         Pcns: tagCosto.value,
         Pvns: tagVenta.value,
-        Stoc: tagCantidad.value
+        Stock: tagCantidad.value
     }
     console.log(estadoEdicion);
     if (!estadoEdicion) {
@@ -137,7 +146,7 @@ ipcRenderer.on('producto-eliminado', (e, args) => {
     alertaEliminado();
 })
 
-//Renderiza el prodcuto actualizado
+//Renderiza el producto actualizado
 ipcRenderer.on('producto-editado', (e, args) => {
     estadoEdicion = false;
     const productEdited = JSON.parse(args);
@@ -147,7 +156,7 @@ ipcRenderer.on('producto-editado', (e, args) => {
             t.Descr = productEdited.Descr;
             t.Pcns = productEdited.Pcns;
             t.Pvns = productEdited.Pvns;
-            t.Stoc = productEdited.Stoc
+            t.Stock = productEdited.Stock
         }
         return t;
     });

@@ -60,11 +60,11 @@ function productRender(producto) {
         <tr>
             <td><a class="addBtn" href="#"> ${t.Codf} </a></td>
             <td><a class="addBtn" href="#"> ${t.Descr} </a></td>
-            <td><a class="addBtn" href="#">Proximamente</a></td>
-            <td><a class="addBtn" href="#">Proximamente</a></td>
-            <td><a class="addBtn" href="#">Proximamente</a></td>
-            <td><a class="addBtn" href="#">Proximamente</a></td>
-            <td><a class="addBtn" href="#">${t.Stoc}</a></td>
+            <td><a class="addBtn" href="#"> ${t.Market} </a></td>
+            <td><a class="addBtn" data-toggle="tooltip" data-placement="top" title="C. Minima Almacen:${t.almini}">${t.mamini}</a></td>
+            <td><a class="addBtn" data-toggle="tooltip" data-placement="top" title="C. Maxima almacen:${t.almaxi}">${t.almaxi}</a></td>
+            <td><a class="addBtn" href="#"> ${t.Almacen} </a></td>
+            <td><a class="addBtn" href="#">${t.Stock}</a></td>
             <td><button class="btn-success" onclick="hazTodo('${t._id}')" id="vamos"><i class="large material-icons">add_circle_outline</i></button></td>
         </tr>
         `;
@@ -101,6 +101,7 @@ function addRec() {
     win.show();
 }
 function hazTodo(id) {
+    alert
     addRec();
     editQU(id);
 }
@@ -111,7 +112,7 @@ getCode.addEventListener('click', function(e, arg) {
     ipcRenderer.send('search-product', inputSearch.value);
 });
 
-//Recive el objeto y muestra
+//Recibe el objeto y muestra
 ipcRenderer.on('producto-buscado', (e, args) => {
     const searchedProduct = JSON.parse(args);
     almacenProducto = searchedProduct;
@@ -120,20 +121,19 @@ ipcRenderer.on('producto-buscado', (e, args) => {
 });
 //recibe y renderiza el objeto actualizado
 ipcRenderer.on('cantidad-editada', (e, args) => {
-    estadoEdicion = false;
+    estadoEdicion = false
     const cantidadEdit = JSON.parse(args);
     almacenProducto = almacenProducto.map((t, i) => {
         if(t._id === cantidadEdit._id) {
-            t.Codf = cantidadEdit.Codf;
-            t.Descr = cantidadEdit.Descr;
-            t.Stoc = cantidadEdit.Stoc;
+            t.Stock = cantidadEdit.Stock;
         }
         return t;
     });
-    console.log(almacenProducto)
+    console.log()
     productRender(almacenProducto)
     almacenProducto = []
 })
+
 
 
 
