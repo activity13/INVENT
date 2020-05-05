@@ -1,7 +1,7 @@
 const { ipcRenderer, remote } = require('electron');
 const path = require('path');
+const Productos = require('../models/productos');
 
-//const
 const getCode = document.querySelector('#getCode');
 const inputSearch = document.querySelector('#inputSearch');
 const cabecera = document.querySelector('#cabecera');
@@ -12,13 +12,13 @@ function renderCabecera() {
     cabecera.innerHTML = `
         </tr>
             <th scope="col">Codigo</th>
+            <th scope="col">Estado</th>
             <th scope="col">Descripcion</th>
             <th scope="col">Minimo Almacen</th>
             <th scope="col">Maximo Almacen</th>
             <th scope="col">Stock Market</th>
             <th scope="col">Stock Almacen</th>
             <th scope="col">Stock Total</th>
-
         </tr>
     `
 }
@@ -29,7 +29,8 @@ function productRender(producto) {
 
         almacen.innerHTML += `
         <tr>
-            <td><a class="addBtn" href="#"> ${t.Codf} </a></td>
+            <td><a class="addBtn" onclick="paseInfo('${t.Codf}')" href="../routes/registroMovimientos.html"> ${t.Codf} </a></td>
+            <td><a href="#" id="reposicion""></a></td>
             <td><a class="addBtn" href="#"> ${t.Descr} </a></td>
             <td><a class="addBtn" href="#"> ${t.almini} </a></td>
             <td><a class="addBtn" href="#"> ${t.almaxi} </a></td>
@@ -46,10 +47,12 @@ function productRender(producto) {
                     <i class="material-icons">edit</i>Edicion
                     </button>
                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                    <a class="dropdown-item" href="#" onclick="editStock('${t._id}')"><i class="material-icons">account_balance</i>Total</a>
-                    <button class="dropdown-item"id="valorMarket" value="${t.Stock}" onclick="editAlmacen('${t._id}')"><i class="material-icons">line_style</i>Almacen</button>
-                    <a class="dropdown-item" href="#" onclick="editMinimo('${t._id}')"><i class="material-icons">call_received</i>Minimo</a>
-                    <a class="dropdown-item" href="#" onclick="editMaximo('${t._id}')" ><i class="material-icons">call_made</i>Maximo</a>
+                        <button class="dropdown-item" id="valorCodf" value="${t.Codf}"href="#" onclick="editStock('${t._id}')"><i class="material-icons">account_balance</i>Total</button>
+                        <button class="dropdown-item" id="valorDescr" value="${t.Descr}" onclick="editAlmacen('${t._id}')"><i class="material-icons">line_style</i>Almacen</button>
+                        <button class="dropdown-item" id="valorStock" value="${t.Stock}" href="#" onclick="editMinimo('${t._id}')"><i class="material-icons">call_received</i>Minimo</button>
+                        <button class="dropdown-item" href="#" onclick="editMaximo('${t._id}')" ><i class="material-icons">call_made</i>Maximo</button>
+                        <button class="dropdown-item" href="#" onclick="entradaInterna('${t._id}')" ><i class="material-icons">call_missed_outgoing</i>Entrada Interna</button>
+
                     </div>
                 </div>
             </div>
@@ -59,8 +62,7 @@ function productRender(producto) {
     });
 }
 let almacenProducto = [];
-let idAEditar = "";
-const inputEmergente = document.getElementById('emergente');
+
 
 //BUSCADOR
     //Envia el input al main para ser procesado
@@ -68,6 +70,7 @@ getCode.addEventListener('click', function(e, arg) {
     ipcRenderer.send('search-product-almacen', inputSearch.value);
 });
 
+    //
     //Recive el objeto y muestra
 ipcRenderer.on('producto-buscado', (e, args) => {
     const searchedProduct = JSON.parse(args);
@@ -76,8 +79,12 @@ ipcRenderer.on('producto-buscado', (e, args) => {
     productRender(almacenProducto);
 });
 //EDICION
+let estadoEdicion = false
+let idAEditar = "";
+const inputEmergente = document.getElementById('emergente');
     //Actualizar Stock Total
 function editStock(id) {
+    estadoEdicion = true
     idAEditar = id;
     console.log(id);
     inputEmergente.innerHTML = `
@@ -88,7 +95,9 @@ function editStock(id) {
     `
     const getQty = document.querySelector('#getQty')
     
-    getQty.addEventListener('click', function() {
+    getQty.addEventListener('click', e => {
+        e.preventDefault()
+
         const inputQty = document.querySelector('#inputQty').value
         ipcRenderer.send('editar-stock-total', {idAEditar, inputQty})
     })
@@ -105,7 +114,7 @@ function editAlmacen(id, total) {
     const getQty = document.querySelector('#getQty')
 
     getQty.addEventListener('click', function() {
-        const StockMarket = document.querySelector('#valorMarket').value
+        const StockMarket = document.querySelector('#valorStock').value
         const inputQty = document.querySelector('#inputQty').value
         ipcRenderer.send('editar-almacen', {idAEditar, inputQty, StockMarket})
         console.log(inputQty)
@@ -141,12 +150,52 @@ function editMaximo(id) {
         ipcRenderer.send('editar-almaxi', {idAEditar, inputQty})
     })
   }
-    //Entrada de productos al almacen
+    //Entrada de productos al almacen: recoje el _id genera el input y se envia junto a eso otros campos para crear un registro de la salida
 function Salida(id) {
     idAEditar = id
     inputEmergente.innerHTML = `
         <div class="form-inline d-flex justify-content-end">
-            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Ingrese nuevo maximo" >
+            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Sacar" >
+            <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Salida</button>
+        </div>
+    `
+    const getQty = document.querySelector('#getQty')
+    getQty.addEventListener('click', function() {
+        const valorCodf = document.querySelector('#valorCodf').value
+        const valorDescr = document.querySelector('#valorDescr').value
+        const valorPicos = document.querySelector('#valorPicos').value
+        const MarketValue = document.querySelector('#MarketValue').value
+        const inputQty = document.querySelector('#inputQty').value
+        const valorStock = document.querySelector('#valorStock').value
+        ipcRenderer.send('salida', {idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, MarketValue})
+    })
+}
+function Entrada(id) {
+    idAEditar = id
+    inputEmergente.innerHTML = `
+        <div class="form-inline d-flex justify-content-end">
+            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Ingresar" >
+            <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Entrada</button>
+        </div>
+    `
+    const getQty = document.querySelector('#getQty')
+    getQty.addEventListener('click', function() {
+        const valorCodf = document.querySelector('#valorCodf').value
+        const valorDescr = document.querySelector('#valorDescr').value
+        const valorPicos = document.querySelector('#valorPicos').value
+        const valorMarket = document.querySelector('#MarketValue').value
+        const valorStock = document.querySelector('#valorStock').value
+        const inputQty = document.querySelector('#inputQty').value
+
+        ipcRenderer.send('entrada', { idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, valorMarket})
+    })
+}
+    //Entrada Interna
+function entradaInterna(id) {
+    idAEditar = id
+    inputEmergente.innerHTML = `
+        <div class="form-inline d-flex justify-content-end">
+            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad ingreso interno" >
             <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Editar</button>
         </div>
     `
@@ -155,15 +204,20 @@ function Salida(id) {
         const valorPicos = document.querySelector('#valorPicos').value
         const MarketValue = document.querySelector('#MarketValue').value
         const inputQty = document.querySelector('#inputQty').value
-        ipcRenderer.send('salida', {idAEditar, inputQty, valorPicos, MarketValue})
+        ipcRenderer.send('entrada-interna', {idAEditar, inputQty, valorPicos, MarketValue})
     })
 }
+
+function paseInfo(codigo) {
+    const paseCodigo = codigo
+    const valorStock = document.querySelector('#valorStock').value
+    ipcRenderer.send('pase-de-info', { paseCodigo, valorStock, })
+}
+
 //RECIBEN Y ACTUALIZAN
 ipcRenderer.on('stock-editado', (e, args) => {
     const StockEditado = JSON.parse(args)
     almacenProducto = almacenProducto.map((t, i) => {
-    let Almacen = StockEditado.Almacen
-    let Total = StockEditado.Stock
         if(t._id === StockEditado._id) {
             t.Codf = StockEditado.Codf
             t.Descr = StockEditado.Descr
@@ -177,5 +231,5 @@ ipcRenderer.on('stock-editado', (e, args) => {
         return t
     })
     productRender(almacenProducto)
-    almacenProducto = []
-})  
+    console.log(almacenProducto)
+})

@@ -1,27 +1,38 @@
 const { model, Schema } = require('mongoose');
 
-const productoSchema = new Schema({
-    codigo: {
+const movimientosSchema = new Schema({
+    Codf: {
         type: String,
-        unique:true,
-        required: true
+        required: false
     },
-    descripcion: {
+    Descr: {
+        type: String,
+        required: false
+    },
+    Tipo: {
         type: String,
         required: true
     },
-    cantidad:{
+    Stock: {
         type: Number,
-        required: true
+        required: false
     },
-    precio: {
+    Almacen: {
         type: Number,
-        required: true
+        required: false
     },
-    status: {
-        type: Boolean,
-        default: true
+    Market: {
+        type: Number,
+        required: false
+    },
+    Cantidad: {
+        type: Number,
+        required: false
+    }, 
+    fecha: {
+        type: Date,
+        require: true
     }
 }, { collection : 'productos' });
 
-module.exports = model('productos', productoSchema)
+module.exports = model('Movimientos', movimientosSchema)

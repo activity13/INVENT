@@ -26,6 +26,16 @@ function alerta1() {
     </div>
     `;
 }
+function alertaDB() {
+    alerta.innerHTML = `
+    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+    <strong>Base de datos desconectada...</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    `;
+}
 
 // AQUI COMIZA EL CODIGO DE INVENT //
 let almacenProducto = [];
@@ -133,7 +143,4 @@ ipcRenderer.on('cantidad-editada', (e, args) => {
     productRender(almacenProducto)
     almacenProducto = []
 })
-
-
-
 

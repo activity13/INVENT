@@ -18,7 +18,7 @@ const temptSchema = new Schema({
         type: Number,
         required: false
     },
-    Stock: {//Se actualiza en Crear, Almacen, Index
+    Stock: {//Se actualiza en Crear, Almacen
         type: Number,
         required: false
     },
