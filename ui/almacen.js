@@ -86,7 +86,6 @@ let idAEditar = "";
 const inputEmergente = document.getElementById('emergente');
 
     //Actualizar Stock Total
-
 function editStock(id) {
     estadoEdicion = true
     idAEditar = id;
@@ -124,7 +123,7 @@ function editAlmacen(id, total) {
         console.log(inputQty)
     })
 }
-    //Actualiza el minimo
+    //Actualiza el minimo de Almacen
 function editMinimo(id) {
     idAEditar = id
     inputEmergente.innerHTML = `
@@ -139,7 +138,7 @@ function editMinimo(id) {
         ipcRenderer.send('editar-almini', {idAEditar, inputQty})
     })
 }
-    //Actualiza el Maximo3
+    //Actualiza el Maximo de Almacen
 function editMaximo(id) {
     idAEditar = id
     inputEmergente.innerHTML = `
@@ -154,7 +153,7 @@ function editMaximo(id) {
         ipcRenderer.send('editar-almaxi', {idAEditar, inputQty})
     })
   }
-    //Entrada de productos al almacen: recoje el _id genera el input y se envia junto a eso otros campos para crear un registro de la salida
+    //Salida al Market
 function Salida(id) {
     idAEditar = id
     inputEmergente.innerHTML = `
@@ -174,6 +173,7 @@ function Salida(id) {
         ipcRenderer.send('salida', {idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, MarketValue})
     })
 }
+    //Entrada por despacho
 function Entrada(id) {
     idAEditar = id
     inputEmergente.innerHTML = `
@@ -221,6 +221,8 @@ function paseInfo(codigo) {
     const valorStock = document.querySelector('#valorStock').value
     ipcRenderer.send('pase-de-info', { paseCodigo, valorStock, })
 }
+
+ipcRenderer.send('buscar-pedido')
 
 //RECIBEN Y ACTUALIZAN
 ipcRenderer.on('stock-editado', (e, args) => {

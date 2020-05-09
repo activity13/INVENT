@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const ProductosExremos = require('./models/productos') 
 const movimintosExtremos = require('./models/task')
 const cajaSchema = require('./models/caja_chica')
+const pedidosExtremos = require('./ui/pedidos')
 // Conexion a la base de datos
 mongoose.connect('mongodb+srv://activity1:olaola123@cluster0-yzqvz.mongodb.net/electrondb', { 
 // mongoose.connect('mongodb://localhost:27017/electrondb', { 
@@ -21,7 +22,7 @@ autoIndex: false
 //crea la ventana de navegador
 let win 
 app.on('ready', () => {
-    win = new BrowserWindow({width: 1200, height: 900, webPreferences: {nodeIntegration:true}});
+    win = new BrowserWindow({width: 1500, height: 900, webPreferences: {nodeIntegration:true}});
     //Carga el raiz en HTML
     win.loadURL(`file://${__dirname}/routes/index.html`);
  });
@@ -188,12 +189,31 @@ ipcMain.on('entrada-interna', async (e, arg) =>  {
         Market: arg.valorMarket - arg.inputQty,
         Almacen: Number(arg.valorPicos) + Number(arg.inputQty),
     }, {new: true})
+    //Se define un objeto llamado nuevoRegistro => se define el almacen de dicho objeto entradaRegistro => se guarda con registroHecho
+    const nuevoRegistro = {
+        Codf: arg.valorCodf,
+        Descr: arg.valorDescr,
+        Tipo: 'Entrada interna',
+        Stock: arg.valorStock,
+        Stock_Final: arg.valorStock,
+        Almacen: Number(arg.valorPicos) + Number(arg.inputQty),
+        Market: Number(arg.valorMarket) - (arg.valorPicos),
+        Cantidad: '+' + arg.inputQty,
+        fecha: new Date
+    }
+    const entradaRegistro = new movimintosExtremos(nuevoRegistro)
+    await entradaRegistro.save()
+    console.log('Mercancia ingresada internamente!')
     e.reply('stock-editado', JSON.stringify(entradaInterna));
 })
+//PEDIDOS
+    //Busqeuda de pedidos
+ipcMain.on(buscar-pedido)
 //REGISTRO_D_E_MOVIMIENTOS
     //recibo de info
     ipcMain.on('pase-de-info', async (e, args) => {
         const infoProducts = await movimintosExtremos.find({Codf: args.paseCodigo})
+        console.log(infoProducts)
         e.reply('info-product', JSON.stringify(infoProducts))
     })
 //Caja Chica 
