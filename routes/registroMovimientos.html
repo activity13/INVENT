@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <title>INVENT - Registro de Producto</title>
+    <title>INVENT - Registro movimientos</title>
 </head>
 <body>
+  <!-- NAVBAR-->
     <nav class="navbar navbar-dark bg-dark">
-      
       <a class="navbar-brand" href="../routes/index.html"><i class="medium material-icons">arrow_back</i>INVENT</a>
       <div class="dropdown">
         <a class="btn btn-outline-warning text-white float-left" href="../routes/Almacen.html" type="button">Almacen</a>
@@ -26,4 +26,13 @@
         </div>
       </div>
     </nav>
-</body>>
+  <!-- NAVBAR-->
+<div class="container-fluid bg-success">
+  <div class="row">
+    <div id="codigo" class="col-3 text-white text-center my-auto"></div>
+    <div id="infoGeneral" class="col-6 text-white text-center"></div>
+    <div id="stockActual" class="col-3 text-white text-center my-auto"></div>
+  </div>
+</div>
+    <script src="../ui/info.js"></script>
+</body>

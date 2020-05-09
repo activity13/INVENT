@@ -17,6 +17,10 @@ const movimientosSchema = new Schema({
         type: Number,
         required: false
     },
+    Stock_Final: {
+        type: Number,
+        required: false
+    },
     Almacen: {
         type: Number,
         required: false

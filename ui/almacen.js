@@ -61,16 +61,16 @@ function productRender(producto) {
         `;
     });
 }
+
 let almacenProducto = [];
 
-
 //BUSCADOR
+
     //Envia el input al main para ser procesado
 getCode.addEventListener('click', function(e, arg) {
     ipcRenderer.send('search-product-almacen', inputSearch.value);
 });
 
-    //
     //Recive el objeto y muestra
 ipcRenderer.on('producto-buscado', (e, args) => {
     const searchedProduct = JSON.parse(args);
@@ -78,11 +78,15 @@ ipcRenderer.on('producto-buscado', (e, args) => {
     renderCabecera();
     productRender(almacenProducto);
 });
+
 //EDICION
+
 let estadoEdicion = false
 let idAEditar = "";
 const inputEmergente = document.getElementById('emergente');
+
     //Actualizar Stock Total
+
 function editStock(id) {
     estadoEdicion = true
     idAEditar = id;
@@ -191,22 +195,26 @@ function Entrada(id) {
     })
 }
     //Entrada Interna
-function entradaInterna(id) {
-    idAEditar = id
-    inputEmergente.innerHTML = `
-        <div class="form-inline d-flex justify-content-end">
-            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad ingreso interno" >
-            <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Editar</button>
-        </div>
-    `
-    const getQty = document.querySelector('#getQty')
-    getQty.addEventListener('click', function() {
-        const valorPicos = document.querySelector('#valorPicos').value
-        const MarketValue = document.querySelector('#MarketValue').value
-        const inputQty = document.querySelector('#inputQty').value
-        ipcRenderer.send('entrada-interna', {idAEditar, inputQty, valorPicos, MarketValue})
-    })
-}
+    function entradaInterna(id) {
+        idAEditar = id
+        inputEmergente.innerHTML = `
+            <div class="form-inline d-flex justify-content-end">
+                <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Ingresar" >
+                <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Entrada</button>
+            </div>
+        `
+        const getQty = document.querySelector('#getQty')
+        getQty.addEventListener('click', function() {
+            const valorCodf = document.querySelector('#valorCodf').value
+            const valorDescr = document.querySelector('#valorDescr').value
+            const valorPicos = document.querySelector('#valorPicos').value
+            const valorMarket = document.querySelector('#MarketValue').value
+            const valorStock = document.querySelector('#valorStock').value
+            const inputQty = document.querySelector('#inputQty').value
+    
+            ipcRenderer.send('entrada-interna', { idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, valorMarket})
+        })
+    }
 
 function paseInfo(codigo) {
     const paseCodigo = codigo

@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const mongoose = require('mongoose');
 const ProductosExremos = require('./models/productos') 
 const movimintosExtremos = require('./models/task')
+const cajaSchema = require('./models/caja_chica')
 // Conexion a la base de datos
 mongoose.connect('mongodb+srv://activity1:olaola123@cluster0-yzqvz.mongodb.net/electrondb', { 
 // mongoose.connect('mongodb://localhost:27017/electrondb', { 
@@ -13,7 +14,8 @@ autoIndex: false
     .then( get => {
         console.log('Base de datos conectada!')})
     .catch( err => {
-        err.send('error-db', Error)
+        const errordb = true
+        err.send('error-db', errordb)
     });
 
 //crea la ventana de navegador
@@ -22,28 +24,14 @@ app.on('ready', () => {
     win = new BrowserWindow({width: 1200, height: 900, webPreferences: {nodeIntegration:true}});
     //Carga el raiz en HTML
     win.loadURL(`file://${__dirname}/routes/index.html`);
-
-    //Abre las herramientas de desarrollo (DevTools)
-
-
-    // const template = [{
-    //     label: app.name,
-    //     submenu: [
-    //         {role: 'new-product'}
-    //     ]
-    // }]
-    // const menu = Menu.buildFromTemplate(template);
-    // Menu.setApplicationMenu(menu);
  });
 
 app.allowRendererProcessReuse = true;
 
 //Aqui Comienzan los procesos que dan vida a las acciones de la pagina
-
-
 //BUSCADORES
     //Busca el producto escrito en el input en INDEX
-ipcMain.on('search-product', async (e, arg) => {
+ipcMain.on('search-product-index', async (e, arg) => {
     const searchedProduct = await ProductosExremos.find(
         {
             "$or": [
@@ -69,14 +57,7 @@ ipcMain.on('search-product-almacen', async (e, arg) => {
 
 
 //Recepciones 
-    //INDEX
-    //Recibe el input en add.js se almacena y se envia a index.js donde el valor será procesado y devuelto
-ipcMain.on('edited-qty', async (e, arg) => {
-    const cantidadFinal = arg;
-    win.webContents.send('colocar-cantidad', cantidadFinal);
-})
-    //ALMACEN
-    //Recibe el valor para restar cambiar el stock minimo
+
 //ACCIONES 
     //CREAR
     //Creacion de productos nuevos:
@@ -113,21 +94,25 @@ ipcMain.on('edited-qty', async (e, arg) => {
         e.reply('producto-editado', JSON.stringify(productEdited));
     });
     //INDEX
-    //Edita la Stock Total al id obtenido
-ipcMain.on('update-cantidad', async (e, args) => {
-    const cantidadEdited = await ProductosExremos.findByIdAndUpdate(args.idAEditar, {
-        Stock: args.cantidadACambiar,
-    }, 
-    {new: true});
-    e.reply('cantidad-editada', JSON.stringify(cantidadEdited));
-});
+
     //ALMACEN
-    //Edita el sotck total del id
+    //Edita el stock total del id Esta es una opcion solo para desarrollo
 ipcMain.on('editar-stock-total', async (e, arg) => {
-    const stockEditado = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
-        Stock: arg.inputQty,
-    }, {new: true})
-    e.reply('stock-editado', JSON.stringify(stockEditado));
+    if(arg.inputQty >= 1) {
+        const stockEditado = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
+            Stock: arg.inputQty,
+        }, {new: true})
+        console.log('Stock total editado correctamente!')
+        e.reply('stock-editado', JSON.stringify(stockEditado));
+    } else {
+        const stockEditado = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
+            Stock: arg.inputQty,
+            Almacen: 0,
+            Market: 0            
+        }, {new: true})
+        console.log('Stock total editado correctamente!')
+        e.reply('stock-editado', JSON.stringify(stockEditado));
+    }
 })
 
     //edita el stock de Almacen y de paso el de Market restando total y almacen
@@ -136,22 +121,22 @@ ipcMain.on('editar-almacen', async (e, arg) => {
         Almacen: arg.inputQty,
         Market: arg.StockMarket - arg.inputQty
     }, {new: true})
-    console.log(sotckAlmacen)
+    console.log('Stock Almacen editado correctamente!')
     e.reply('stock-editado', JSON.stringify(sotckAlmacen));
 })
 ipcMain.on('editar-almini', async (e, arg) =>  {
     const minimoAlmacen = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
         almini: arg.inputQty
     }, {new: true})
-    console.log(minimoAlmacen)
+    console.log('Minimo de Almacen editado correctamente!')
     e.reply('stock-editado', JSON.stringify(minimoAlmacen));
 })
 ipcMain.on('editar-almaxi', async (e, arg) =>  {
-    const minimoAlmacen = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
+    const maximoAlmacen = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
         almaxi: arg.inputQty
     }, {new: true})
-    console.log(minimoAlmacen)
-    e.reply('stock-editado', JSON.stringify(minimoAlmacen));
+    console.log('Maximo de Almacen editado correctamente!')
+    e.reply('stock-editado', JSON.stringify(maximoAlmacen));
 })
 ipcMain.on('salida', async (e, arg) =>  {
     const salidaAlmacen = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
@@ -163,15 +148,15 @@ ipcMain.on('salida', async (e, arg) =>  {
         Codf: arg.valorCodf,
         Descr: arg.valorDescr,
         Tipo: 'Salida a Market',
-        Stock: Number(arg.valorStock) - Number(arg.inputQty),
+        Stock: arg.valorStock,
+        Stock_Final: Number(arg.valorStock) - Number(arg.inputQty),
         Almacen: Number(arg.valorPicos) - Number(arg.inputQty),
         Market: Number(arg.MarketValue) + Number(arg.inputQty),
-        Cantidad: '+' + arg.inputQty,
+        Cantidad: '-' + arg.inputQty ,
         fecha: new Date
     }
     const entradaRegistro = new movimintosExtremos(nuevoRegistro)
-    const registroHecho = await entradaRegistro.save()
-    console.log(registroHecho)
+    await entradaRegistro.save()
     console.log('movimiento almacenado!')
     e.reply('stock-editado', JSON.stringify(salidaAlmacen));
 })
@@ -186,28 +171,53 @@ ipcMain.on('entrada', async (e, arg) =>  {
         Descr: arg.valorDescr,
         Tipo: 'Entrada por Despacho',
         Stock: arg.valorStock,
+        Stock_Final: Number(arg.valorStock) + Number(arg.inputQty),
         Almacen: Number(arg.valorPicos) + Number(arg.inputQty),
-        Market: Number(arg.valorMarket),
+        Market: Number(arg.valorMarket) - (arg.valorPicos),
         Cantidad: '+' + arg.inputQty,
         fecha: new Date
     }
     const entradaRegistro = new movimintosExtremos(nuevoRegistro)
-    const registroHecho = await entradaRegistro.save()
-    console.log(registroHecho)
-    console.log('movimiento almacenado!')
+    await entradaRegistro.save()
+    console.log('Mercancia ingresada por despacho!')
     e.reply('stock-editado', JSON.stringify(entradaAlmacen));
 })
 ipcMain.on('entrada-interna', async (e, arg) =>  {
-    const entradaAlmacen = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
+    console.log(arg.idAEditar)
+    const entradaInterna = await ProductosExremos.findByIdAndUpdate(arg.idAEditar, {
+        Market: arg.valorMarket - arg.inputQty,
         Almacen: Number(arg.valorPicos) + Number(arg.inputQty),
-        Market: Number(arg.MarketValue) - Number(arg.inputQty),
     }, {new: true})
-    e.reply('stock-editado', JSON.stringify(entradaAlmacen));
+    e.reply('stock-editado', JSON.stringify(entradaInterna));
 })
 //REGISTRO_D_E_MOVIMIENTOS
     //recibo de info
     ipcMain.on('pase-de-info', async (e, args) => {
         const infoProducts = await movimintosExtremos.find({Codf: args.paseCodigo})
         e.reply('info-product', JSON.stringify(infoProducts))
-        console.log(infoProducts)
+    })
+//Caja Chica 
+    //recibe los datos para crear una vueva caja
+    ipcMain.on('pase-nueva-caja', async (e, args) => {
+        const nueva_caja_chica = {
+            Creacion: {
+                responsable: args.responsable,
+                montoInit: args.montoInit,
+                fechaInit: new Date
+            }
+        }
+        const nuevaCaja = new cajaSchema(nueva_caja_chica)
+        const guardarCaja = await nuevaCaja.save()
+        e.reply('caja-creada', JSON.stringify(guardarCaja))
+    })
+    //busca todo los documentos de la coleccion para renderizarlos por fecha
+    ipcMain.on('get-list', async (e, args) => {
+        const showList = await cajaSchema.find().limit(20); //busca todos los documentos en la coleccion productos 
+        e.reply('show-list', JSON.stringify(showList));
+    });
+    //busca los datos para mostrar la info de la caja
+    ipcMain.on('caja-elegida', async (e, arg) => {
+        const infoCaja = await cajaSchema.findOne({_id: arg.idAMostrar})
+        console.log("infoCaja", infoCaja)
+        e.reply('envio-info', JSON.stringify(infoCaja))
     })

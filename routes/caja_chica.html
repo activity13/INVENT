@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Secutiy-Policy" name="viewport" content="unsafe-eval">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <title>Caja Chica Invent</title>
+</head>
+<body>
+    <!-- NAVBAR-->
+      <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="../routes/index.html"><i class="medium material-icons">arrow_back</i>INVENT</a>
+        <a class="btn-output-primary" href="#" id="btnCrearCaja"><i class="small material-icons">note_add</i></a>
+        <div id="inputNuevaCaja"></div>
+        <a class="btn btn-outline-warning text-white float-left" href="../routes/Almacen.html" type="button">Almacen</a>
+      </nav>
+    <!-- NAVBAR-->
+      <div class="container-fluid bg-primary">
+          <div class="row" id="chInfo">
+
+          </div>
+      </div>
+  <br>
+  <br>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-2 text-center">
+        <div class="list-group">
+          <button type="button" class="list-group-item list-group-item-action active">
+            CAJAS EXISTENTESS
+          </button>
+          <div id="cajas_selector">
+
+          </div>
+        </div>
+      </div>
+      <div class="col-10">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Numero</th>
+              <th scope="col">Proveedor</th>
+              <th scope="col">Motivo</th>
+              <th scope="col">Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">
+                  <input type="date" class="datepicker">
+              </th>
+              <td>
+                  <select class="custom-select custom-select-sm">
+                      <option selected>Open this select menu</option>
+                      <option value="Factura">Factura</option>
+                      <option value="Boleta">Boleta</option>
+                      <option value="Recibo">Recibo</option>
+                      <option value="Nota de Venta">Nota de Venta</option>
+                  </select>
+              </td>
+              <td>
+                <input type="text" id="numeroDoc" placeholder="Ingrese un numero de documento">
+            </td>
+              <td>
+                  <input type="text" id="Proveedor" placeholder="Ingrese un proveedor">
+              </td>
+              <td>
+                  <input type="text" id="Motivo" placeholder="Ingrese un motivo">
+              </td>
+              <td>
+                  <input type="number" id="Motivo" placeholder="Ingrese un Monto">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+      <script src="../ui/cajaChica.js"></script>
+</body>

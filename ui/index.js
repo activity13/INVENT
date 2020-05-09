@@ -1,48 +1,9 @@
 const { ipcRenderer, remote } = require('electron');
 const path = require('path');
-const { BrowserWindow } = require('electron').remote;
-const redirectAdd = document.getElementById('addBtn');
-const vamos = document.querySelector('#vamos');
-const alerta = document.querySelector('#notifications');
-
-//Notificaciones
-function alerta0() {
-    alerta.innerHTML = `
-    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-    <strong>Error0 </strong> Debe ingresar una cantidad 
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    `;
-}
-function alerta1() {
-    alerta.innerHTML = `
-    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-    <strong>Stock Actualizado!</strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    `;
-}
-function alertaDB() {
-    alerta.innerHTML = `
-    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-    <strong>Base de datos desconectada...</strong>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    `;
-}
 
 // AQUI COMIZA EL CODIGO DE INVENT //
-let almacenProducto = [];
-//Notifica que la base de datos esta conectada;
-const DBnoti = document.querySelector('#notiDB');
 
-//const
+//Declarando receptores y emisores
 const getCode = document.querySelector('#getCode');
 const inputSearch = document.querySelector('#inputSearch');
 const cabecera = document.querySelector('#cabecera');
@@ -72,54 +33,19 @@ function productRender(producto) {
             <td><a class="addBtn" href="#"> ${t.Descr} </a></td>
             <td><a class="addBtn" href="#"> ${t.Market} </a></td>
             <td><a class="addBtn" data-toggle="tooltip" data-placement="top" title="C. Minima Almacen:${t.almini}">${t.mamini}</a></td>
-            <td><a class="addBtn" data-toggle="tooltip" data-placement="top" title="C. Maxima almacen:${t.almaxi}">${t.almaxi}</a></td>
+            <td><a class="addBtn" data-toggle="tooltip" data-placement="top" title="C. Maxima almacen:${t.almaxi}">${t.mamaxi}</a></td>
             <td><a class="addBtn" href="#"> ${t.Almacen} </a></td>
             <td><a class="addBtn" href="#">${t.Stock}</a></td>
-            <td><button class="btn-success" onclick="hazTodo('${t._id}')" id="vamos"><i class="large material-icons">add_circle_outline</i></button></td>
         </tr>
         `;
     });
 }
-//Cumple varias funciones una es renderizar la ventana de cambiar cantidad y la otra envia la informacion como el id
-let estadoEdicion = false;
-let idAEditar = "";
-let cantidadACambiar = []
 
-// recibe el id en addRec() y pasa a variable y es enviado a 
-function editQU(id) {
-    ipcRenderer.on('colocar-cantidad', function(e, arg) {
-        console.log(arg);
-        cantidadACambiar = Number(arg);
-        estadoEdicion = true;
-        idAEditar = id;
-        if(cantidadACambiar != null) {
-            ipcRenderer.send("update-cantidad", { idAEditar, cantidadACambiar });
-            alerta1();
-        } else {
-            alerta0();
-        }
-    })
-}
-
-function addRec() {
-    const modalPath = path.join('file://', __dirname, 'add.html');
-    let win = new BrowserWindow({
-        width: 300, height: 200, frame: false, alwaysOnTop: true, webPreferences: {nodeIntegration:true}
-    })
-    win.on('close', function() { win = null});
-    win.loadURL(modalPath);
-    win.show();
-}
-function hazTodo(id) {
-    alert
-    addRec();
-    editQU(id);
-}
-
+let almacenProducto = [];
 
 //Envia el input al main para ser procesado
 getCode.addEventListener('click', function(e, arg) {
-    ipcRenderer.send('search-product', inputSearch.value);
+    ipcRenderer.send('search-product-index', inputSearch.value);
 });
 
 //Recibe el objeto y muestra
@@ -129,18 +55,5 @@ ipcRenderer.on('producto-buscado', (e, args) => {
     renderCabecera();
     productRender(almacenProducto);
 });
-//recibe y renderiza el objeto actualizado
-ipcRenderer.on('cantidad-editada', (e, args) => {
-    estadoEdicion = false
-    const cantidadEdit = JSON.parse(args);
-    almacenProducto = almacenProducto.map((t, i) => {
-        if(t._id === cantidadEdit._id) {
-            t.Stock = cantidadEdit.Stock;
-        }
-        return t;
-    });
-    console.log()
-    productRender(almacenProducto)
-    almacenProducto = []
-})
+
 
