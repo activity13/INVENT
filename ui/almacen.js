@@ -76,7 +76,9 @@ ipcRenderer.on('producto-buscado', (e, args) => {
     const searchedProduct = JSON.parse(args);
     almacenProducto = searchedProduct;
     renderCabecera();
-    productRender(almacenProducto);
+    productRender(almacenProducto)
+    console.log(almacenProducto)
+    
 });
 
 //EDICION
@@ -89,7 +91,6 @@ const inputEmergente = document.getElementById('emergente');
 function editStock(id) {
     estadoEdicion = true
     idAEditar = id;
-    console.log(id);
     inputEmergente.innerHTML = `
         <div class="form-inline d-flex justify-content-end">
             <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Ingrese cantidad para modificar" >
@@ -107,6 +108,7 @@ function editStock(id) {
 }
     //Actualizar Stock Almacen
 function editAlmacen(id, total) {
+    estadoEdicion = true
     idAEditar = id
     inputEmergente.innerHTML = `
         <div class="form-inline d-flex justify-content-end">
@@ -116,15 +118,21 @@ function editAlmacen(id, total) {
     `
     const getQty = document.querySelector('#getQty')
 
-    getQty.addEventListener('click', function() {
-        const StockMarket = document.querySelector('#valorStock').value
+    getQty.addEventListener('click', e => {
+        e.preventDefault()
+
         const inputQty = document.querySelector('#inputQty').value
-        ipcRenderer.send('editar-almacen', {idAEditar, inputQty, StockMarket})
+        const valorMarket = document.querySelector('#MarketValue').value
+        const valorPicos = document.querySelector('#valorPicos').value
+        const valorStock = document.querySelector('#valorStock').value
+
+        ipcRenderer.send('editar-almacen', {idAEditar, inputQty, valorMarket, valorPicos, valorStock})
         console.log(inputQty)
     })
 }
     //Actualiza el minimo de Almacen
 function editMinimo(id) {
+    estadoEdicion = true
     idAEditar = id
     inputEmergente.innerHTML = `
         <div class="form-inline d-flex justify-content-end">
@@ -133,13 +141,17 @@ function editMinimo(id) {
         </div>
     `
     const getQty = document.querySelector('#getQty')
-    getQty.addEventListener('click', function() {
+
+    getQty.addEventListener('click', e => {
+        e.preventDefault()
+
         const inputQty = document.querySelector('#inputQty').value
         ipcRenderer.send('editar-almini', {idAEditar, inputQty})
     })
 }
     //Actualiza el Maximo de Almacen
 function editMaximo(id) {
+    estadoEdicion = true
     idAEditar = id
     inputEmergente.innerHTML = `
         <div class="form-inline d-flex justify-content-end">
@@ -148,33 +160,17 @@ function editMaximo(id) {
         </div>
     `
     const getQty = document.querySelector('#getQty')
-    getQty.addEventListener('click', function() {
+
+    getQty.addEventListener('click', e => {
+        e.preventDefault()
+
         const inputQty = document.querySelector('#inputQty').value
         ipcRenderer.send('editar-almaxi', {idAEditar, inputQty})
     })
   }
     //Salida al Market
 function Salida(id) {
-    idAEditar = id
-    inputEmergente.innerHTML = `
-        <div class="form-inline d-flex justify-content-end">
-            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Sacar" >
-            <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Salida</button>
-        </div>
-    `
-    const getQty = document.querySelector('#getQty')
-    getQty.addEventListener('click', function() {
-        const valorCodf = document.querySelector('#valorCodf').value
-        const valorDescr = document.querySelector('#valorDescr').value
-        const valorPicos = document.querySelector('#valorPicos').value
-        const MarketValue = document.querySelector('#MarketValue').value
-        const inputQty = document.querySelector('#inputQty').value
-        const valorStock = document.querySelector('#valorStock').value
-        ipcRenderer.send('salida', {idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, MarketValue})
-    })
-}
-    //Entrada por despacho
-function Entrada(id) {
+    estadoEdicion = true
     idAEditar = id
     inputEmergente.innerHTML = `
         <div class="form-inline d-flex justify-content-end">
@@ -183,7 +179,35 @@ function Entrada(id) {
         </div>
     `
     const getQty = document.querySelector('#getQty')
-    getQty.addEventListener('click', function() {
+
+    getQty.addEventListener('click', e => {
+    e.preventDefault()
+
+        const valorCodf = document.querySelector('#valorCodf').value
+        const valorDescr = document.querySelector('#valorDescr').value
+        const valorPicos = document.querySelector('#valorPicos').value
+        const valorMarket = document.querySelector('#MarketValue').value
+        const valorStock = document.querySelector('#valorStock').value
+        const inputQty = document.querySelector('#inputQty').value
+
+        ipcRenderer.send('salida', { idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, valorMarket})
+    })
+}
+    //Entrada por despacho
+function Entrada(id) {
+    estadoEdicion = true
+    idAEditar = id
+    inputEmergente.innerHTML = `
+        <div class="form-inline d-flex justify-content-end">
+            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Ingresar" >
+            <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Entrada</button>
+        </div>
+    `
+    const getQty = document.querySelector('#getQty')
+
+    getQty.addEventListener('click', e => {
+        e.preventDefault()
+
         const valorCodf = document.querySelector('#valorCodf').value
         const valorDescr = document.querySelector('#valorDescr').value
         const valorPicos = document.querySelector('#valorPicos').value
@@ -195,26 +219,30 @@ function Entrada(id) {
     })
 }
     //Entrada Interna
-    function entradaInterna(id) {
-        idAEditar = id
-        inputEmergente.innerHTML = `
-            <div class="form-inline d-flex justify-content-end">
-                <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Ingresar" >
-                <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Entrada</button>
-            </div>
-        `
-        const getQty = document.querySelector('#getQty')
-        getQty.addEventListener('click', function() {
-            const valorCodf = document.querySelector('#valorCodf').value
-            const valorDescr = document.querySelector('#valorDescr').value
-            const valorPicos = document.querySelector('#valorPicos').value
-            const valorMarket = document.querySelector('#MarketValue').value
-            const valorStock = document.querySelector('#valorStock').value
-            const inputQty = document.querySelector('#inputQty').value
-    
-            ipcRenderer.send('entrada-interna', { idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, valorMarket})
-        })
-    }
+function entradaInterna(id) {
+    estadoEdicion = true
+    idAEditar = id
+    inputEmergente.innerHTML = `
+        <div class="form-inline d-flex justify-content-end">
+            <input autofocus class="form-control mr-sm-2" type="number" id="inputQty" placeholder="Cantidad a Ingresar" >
+            <button class="btn btn-warning my-2 my-sm-0" type="submit" id="getQty" value="search">Dar Entrada</button>
+        </div>
+    `
+    const getQty = document.querySelector('#getQty')
+
+    getQty.addEventListener('click', e => {
+    e.preventDefault()
+
+        const valorCodf = document.querySelector('#valorCodf').value
+        const valorDescr = document.querySelector('#valorDescr').value
+        const valorPicos = document.querySelector('#valorPicos').value
+        const valorMarket = document.querySelector('#MarketValue').value
+        const valorStock = document.querySelector('#valorStock').value
+        const inputQty = document.querySelector('#inputQty').value
+
+        ipcRenderer.send('entrada-interna', { idAEditar, inputQty, valorCodf, valorDescr, valorPicos, valorStock, valorMarket})
+    })
+}
 
 function paseInfo(codigo) {
     const paseCodigo = codigo
@@ -226,6 +254,7 @@ ipcRenderer.send('buscar-pedido')
 
 //RECIBEN Y ACTUALIZAN
 ipcRenderer.on('stock-editado', (e, args) => {
+    estadoEdicion = false
     const StockEditado = JSON.parse(args)
     almacenProducto = almacenProducto.map((t, i) => {
         if(t._id === StockEditado._id) {
@@ -240,6 +269,7 @@ ipcRenderer.on('stock-editado', (e, args) => {
         inputEmergente.innerHTML = ``
         return t
     })
+    idAEditar = ''
     productRender(almacenProducto)
     console.log(almacenProducto)
 })

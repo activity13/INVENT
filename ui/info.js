@@ -37,8 +37,8 @@ function renderMoves(info) {
             <td><a class="addBtn" href="#"> ${t.fecha} </a></td>
             <td><a class="addBtn" href="#"> ${t.Cantidad} </a></td>
             <td><a class="addBtn" href="#"> ${t.Tipo} </a></td>
+            <td><a class="addBtn" href="#"> ${t.Almacen} </a></td>
             <td><a class="addBtn" href="#"> ${t.Stock_Final} </a></td>
-            <td><a class="addBtn" href="#"> ${t.Stock} </a></td>
         </tr>
         `
     })

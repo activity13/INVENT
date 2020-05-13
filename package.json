@@ -17,6 +17,7 @@
   "author": "Isaac Velez Wolfenson",
   "license": "ISC",
   "devDependencies": {
+    "devtron": "^1.4.0",
     "electron": "^8.2.3",
     "electron-packager": "^14.2.1",
     "electron-winstaller": "^4.0.0"
